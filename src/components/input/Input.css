@@ -1,0 +1,64 @@
+.p-dropdown-filter,
+.p-dropdown-filter-container,
+.p-inputtext {
+  @apply !border-zinc-400 !shadow-none;
+}
+
+/* .p-dropdown-clear-icon {
+  @apply !mr-[10px];
+} */
+
+.input {
+  @apply rounded-[3px] border border-zinc-300 bg-[#0000000a] px-5 py-[12px] text-[12px] text-zinc-800 outline-none focus:border-[#4277b0];
+}
+.p-dropdown-panel {
+  @apply !rounded;
+}
+.p-dropdown,
+.p-multiselect {
+  @apply !shadow-none;
+}
+
+.p-multiselect-item span {
+  @apply !text-sm;
+}
+
+.p-dropdown-item-label {
+  @apply !text-sm !font-medium;
+}
+
+.p-inputtext {
+  @apply !text-sm !text-black;
+}
+
+.p-inputtext input::placeholder {
+  @apply !text-zinc-400;
+}
+
+.overrideInputSelect {
+  @apply !rounded-[15px] !border-none !bg-[#fff0] !px-0;
+}
+
+.overrideInputSelect .p-inputtext {
+  @apply !text-[12px];
+}
+
+.p-dropdown-panel,
+.p-multiselect-panel {
+  @apply !rounded-xl !shadow-md;
+}
+.p-placeholder {
+  @apply !text-zinc-400;
+}
+
+.back-input .p-dropdown-clear-icon {
+  @apply !mr-[18px];
+}
+
+h4.error {
+  @apply text-[11px] text-red-700;
+}
+
+input:disabled {
+  @apply !bg-zinc-200 !border-zinc-300;
+}

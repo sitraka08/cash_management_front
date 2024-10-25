@@ -1,0 +1,99 @@
+@layer tailwind-base, primereact, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+:root {
+  --color-primary: #318283;
+  --color-input: #4eb0b2;
+  --color-secondary: #272626;
+  --color-main: #318283;
+  --color-gray: #3f3e3e;
+}
+
+@font-face {
+  font-family: "poppinsMedium";
+  src: url("../src/assets/fonts/Poppins-Medium.ttf");
+}
+
+@font-face {
+  font-family: "poppinsLight";
+  src: url("../src/assets/fonts/Poppins-Light.ttf");
+}
+
+@font-face {
+  font-family: "poppinsBold";
+  src: url("../src/assets/fonts/Poppins-Bold.ttf");
+}
+
+* {
+  font-family: "poppinsMedium";
+}
+
+.Toastify__toast {
+  min-height: none !important;
+}
+.Toastify__toast-body > div:last-child {
+  font-size: 12px !important;
+}
+.Toastify__close-button {
+  padding-top: 7px !important;
+}
+.Toastify__zoom-enter {
+  height: 15px !important;
+}
+.p-accordion .p-accordion-tab {
+  margin: 15px 0 !important;
+}
+
+.p-accordion-header-link {
+  border: 1px solid #dedede !important;
+  border-radius: 10px !important;
+}
+
+.p-accordion-tab-active .p-accordion-header-link {
+  border-radius: 0 !important;
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+}
+
+.p-accordion-content {
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
+body {
+  overflow-x: hidden;
+}
+
+.appContainer {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.p-toast-detail {
+  font-size: 12px !important;
+}
+.p-toast-summary {
+  font-size: 14px !important;
+}
+
+.p-toast .p-toast-message .p-toast-message-content {
+  padding: 12px !important;
+}
+
+.p-menuitem-content .p-menuitem-text {
+  font-size: 12px !important;
+}
+.p-tooltip-text {
+  @apply !text-[12px];
+}
+
+.notiflix-report-message {
+  @apply !text-center;
+}

@@ -1,0 +1,21 @@
+.css-t3ipsp-control,
+.css-13cymwt-control {
+  @apply w-full !rounded-[3px] !border !border-zinc-300 !bg-[#0000000a] !px-3
+  !py-[3px] !text-sm !text-zinc-800 !outline-none focus:!border-[#42b063] hover:!border-[#428db0] !shadow-none;
+}
+.css-1dimb5e-singleValue {
+  font-size: 12px !important;
+}
+.css-1jqq78o-placeholder {
+  font-size: 12px !important;
+}
+.css-d7l1ni-option,
+.css-10wo9uf-option {
+  font-size: 12px !important;
+  color: var(--color-gray) !important;
+}
+
+.css-tr4s17-option {
+  background-color: var(--color-primary) !important;
+  font-size: 12px !important;
+}

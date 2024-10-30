@@ -14,6 +14,7 @@ import Datatables from "../../../components/dataTable/Datatables";
 import Search from "../../../components/add/Search";
 import { convertJsonToFormData, filterImage } from "../../../utils/Functions";
 import Inputs from "../../../components/input/Inputs";
+import * as yup from "yup";
 
 const FORM = [
   {
@@ -79,7 +80,16 @@ const StudentList = () => {
     reset,
     watch,
     handleSubmit,
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(
+      yup.object().shape({
+        last_name: yup.string().required("Nom obligatoire"),
+        first_name: yup.string().required("Prénom obligatoire"),
+        email: yup.string().email().required("Email obligatoire"),
+        address: yup.string().required("Adresse obligatoire"),
+      })
+    ),
+  });
 
   const {
     error: errorFetch,

@@ -14,6 +14,7 @@ import {
 } from "../../../utils/Functions";
 import Inputs from "../../../components/input/Inputs";
 import { mergeUser } from "../../../utils/refactor/merge";
+import * as yup from "yup";
 
 const tabHeader = ["Image", "Nom", "Email", "Role", "Action"];
 const tabField = ["image", "first_name", "email", "role", "action"];
@@ -69,7 +70,15 @@ const UserList = () => {
     reset,
     handleSubmit,
     watch,
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(
+      yup.object().shape({
+        first_name: yup.string().required("Nom est obligatoire"),
+        email: yup.string().email().required("Email est obligatoire"),
+        role: yup.object("").required("Role est obligatoire"),
+      })
+    ),
+  });
 
   const {
     error: errorFetch,

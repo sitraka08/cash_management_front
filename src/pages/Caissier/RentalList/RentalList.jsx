@@ -1,22 +1,64 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FORM, SCHEMA } from "./const";
 import { set, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Notiflix, { Loading, Report } from "notiflix";
-import { add, remove, update, useUsers } from "../../../services/user/useUser";
+import { add, remove, update, useSale } from "../../../services/sale/useSale";
 import IconCrud from "../../../components/IconCrud/IconCrud";
 import Datatables from "../../../components/dataTable/Datatables";
 import Search from "../../../components/add/Search";
-import { addOptions } from "../../../utils/Functions";
 import Inputs from "../../../components/input/Inputs";
+import * as yup from "yup";
+import { useEquipment } from "../../../services/equipment/useEquipment";
+import {
+  clientToSelect,
+  equipmentToSelect,
+  mergeSale,
+  trainingToSelect,
+} from "../../../utils/refactor/merge";
+import { useClient } from "../../../services/client/useClient";
+import { addOptions } from "../../../utils/Functions";
 
-const tabHeader = ["Id Matériel", "Id Client", "Date", "Action"];
-const tabField = ["id", "id_client", "date", "action"];
-const key = "ventes";
+const FORM = [
+  {
+    name: "equipment_id",
+    label: "Matériel",
+    type: "select",
+    placeholder: "ID et Designation",
+    required: true,
+  },
+  {
+    name: "client_id",
+    label: "ID et nom client",
+    type: "select",
+    placeholder: "Ex: 1000",
+    required: true,
+  },
+  {
+    name: "sale_date",
+    label: "Date",
+    type: "Date",
+    required: true,
+  },
+];
 
-const VenteList = () => {
+const tabHeader = [
+  "Id matériel",
+  "Désignation matériel",
+  "Client",
+  "Date",
+  "Action",
+];
+const tabField = [
+  ["equipment", "ref"],
+  ["equipment", "design"],
+  ["client", "first_name"],
+  "sale_date",
+  "action",
+];
+const key = "rentals";
+
+const RentalList = () => {
   const queryClient = useQueryClient();
   const {
     control,
@@ -26,16 +68,22 @@ const VenteList = () => {
     getValues,
     reset,
     handleSubmit,
-  } = useForm({
-    resolver: yupResolver(SCHEMA),
-  });
+    watch,
+  } = useForm();
 
   const {
     error: errorFetch,
-    data: { personnels },
+    data: { sales },
     isError,
     isFetching,
-  } = useUsers();
+  } = useSale();
+
+  const {
+    data: { equipments },
+  } = useEquipment();
+  const {
+    data: { clients },
+  } = useClient();
 
   const { mutate } = useMutation({
     mutationFn: getValues("id") ? update : add,
@@ -45,7 +93,6 @@ const VenteList = () => {
     },
     onSuccess: (data) => {
       Loading.remove();
-      setOpen(false);
       Notiflix.Notify.info("Succès", "Fermer");
       queryClient.invalidateQueries(key);
       reset();
@@ -64,6 +111,7 @@ const VenteList = () => {
     onSuccess: (data) => {
       Loading.remove();
       queryClient.invalidateQueries(key);
+      Notiflix.Notify.info("Succès", "Fermer");
       reset();
     },
     onError: (error) => {
@@ -74,7 +122,7 @@ const VenteList = () => {
 
   const action = (rowData) => {
     const editAction = (data) => {
-      Object.entries(mergeUser(data)).forEach(([name, value]) => {
+      Object.entries(mergeSale(data)).forEach(([name, value]) => {
         setValue(name, value);
       });
     };
@@ -83,32 +131,45 @@ const VenteList = () => {
         deleteAction={() => deleteFn(rowData.id)}
         editAction={editAction}
         onDelete={() => console.log("delete")}
-        listAction={["edit", "delete", "details"]}
+        listAction={["edit", "delete"]}
         rowData={rowData}
       />
     );
   };
 
-  const newOptions = [];
-
   const submit = (value) => {
     const data = {
       ...value,
-      poste_id: value.poste_id?.id,
-      region_id: value.region_id?.id,
+      client_id: value.client_id.value,
+      equipment_id: value.equipment_id.value,
     };
-
     mutate(data);
-    Notiflix.Notify.info("Succès", "Fermer");
   };
+
+  const OPTIONS = [
+    {
+      name: "equipment_id",
+      options: equipmentToSelect(equipments),
+    },
+    {
+      name: "client_id",
+      options: clientToSelect(clients),
+    },
+  ];
 
   return (
     <>
-      <Search onSubmit={handleSubmit(submit)}>
+      <Search
+        onSubmit={handleSubmit(submit)}
+        isEdited={watch("id")}
+        onReset={() => {
+          reset();
+        }}
+      >
         <div className="w-full  grid grid-cols-3 my-4 gap-5">
           {addOptions({
             originalArray: FORM,
-            optionsArray: newOptions,
+            optionsArray: OPTIONS,
           }).map((item, index) => (
             <Inputs
               key={index}
@@ -126,7 +187,7 @@ const VenteList = () => {
           tabHeader={tabHeader}
           tabField={tabField}
           isFetching={isFetching}
-          tabValue={personnels?.data}
+          tabValue={sales}
           isError={isError}
           error={errorFetch}
           actionsTables={action}
@@ -137,4 +198,4 @@ const VenteList = () => {
   );
 };
 
-export default VenteList;
+export default RentalList;

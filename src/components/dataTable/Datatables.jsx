@@ -3,9 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import "./datatables.css";
 import Loading from "../loading/Loading";
-import { ifArray, ifObject } from "../../utils/TypeofVariable";
-import { filterImage, isArray } from "../../utils/Functions";
-import { dateYYYYMMDDtoDDMMYYYY } from "../../utils/Dateformat";
+import { dateTimeFormat, filterImage, isArray } from "../../utils/Functions";
 
 const Datatables = ({
   tabHeader,
@@ -46,11 +44,11 @@ const Datatables = ({
   const bodyFilter = (field, rowData) => {
     if (field === "action") {
       return actionsTables(rowData);
-    } else if (field.includes("date") && field !== "date_bareme") {
-      return <span>{dateYYYYMMDDtoDDMMYYYY(rowData[field])}</span>;
+    } else if (field?.includes("date")) {
+      return <span>{dateTimeFormat(rowData[field])}</span>;
     } else if (isArray(field)) {
       return getValueByPath(rowData, field);
-    } else if (field.includes("image")) {
+    } else if (field?.includes("image")) {
       return (
         <img
           src={filterImage(rowData[field])}

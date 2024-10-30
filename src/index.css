@@ -97,3 +97,9 @@ body {
 .notiflix-report-message {
   @apply !text-center;
 }
+
+/* first child */
+
+.addContainer > div {
+  @apply !place-items-start;
+}

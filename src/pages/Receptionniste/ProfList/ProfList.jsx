@@ -11,6 +11,7 @@ import Search from "../../../components/add/Search";
 import { addOptions } from "../../../utils/Functions";
 import Inputs from "../../../components/input/Inputs";
 import { useProf } from "../../../services/prof/useProf";
+import * as yup from "yup";
 
 const FORM = [
   {
@@ -65,7 +66,16 @@ const ProfList = () => {
     reset,
     handleSubmit,
     watch,
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(
+      yup.object().shape({
+        last_name: yup.string().required("Nom obligatoire"),
+        first_name: yup.string().required("Prénom obligatoire"),
+        email: yup.string().email().required("Email obligatoire"),
+        address: yup.string().required("Adresse obligatoire"),
+      })
+    ),
+  });
 
   const {
     error: errorFetch,

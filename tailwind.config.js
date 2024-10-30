@@ -20,7 +20,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: "#1C4E80",
+        primary: "#1A2692",
         borderPrimary: "#006C94",
         secondary: "#02044a",
         error: "#d62222",

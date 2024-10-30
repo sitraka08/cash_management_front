@@ -24,6 +24,11 @@ const RECEPTION_MENU = [
     path: "/admin/clients",
   },
   {
+    title: "Matériels",
+    icon: FaUser,
+    path: "/admin/equipments",
+  },
+  {
     title: "Professeurs",
     icon: FaUser,
     path: "/admin/profs",
@@ -48,33 +53,33 @@ const CAISSIER_MENU = [
   {
     title: "Statistiques",
     icon: IoStatsChart,
-    path: "/caissier/stats",
+    path: "/admin/stats",
   },
   {
     title: "Affectations",
     icon: FaUserCog,
-    path: "/caissier/affectations/",
+    path: "/admin/assignment/",
   },
   {
     title: "Participations",
     icon: FaUser,
-    path: "/caissier/participations",
+    path: "/admin/participations",
   },
   {
     title: "Ventes",
     icon: FaUser,
-    path: "/caissier/ventes",
+    path: "/admin/sales",
   },
   {
     title: "Logements",
     icon: FaUser,
-    path: "/caissier/logements",
+    path: "/admin/logements",
   },
 
   {
     title: "Achats",
     icon: FaUser,
-    path: "/caissier/achats",
+    path: "/admin/achats",
   },
 ];
 
@@ -107,31 +112,26 @@ const CHEF_MENU = [
     title: "Statistiques",
     icon: IoStatsChart,
     path: "/2/stats",
-    active: "/2/stats",
   },
   {
     title: "Validation CRCM",
     icon: FaUserCog,
     path: "/2/crcm/",
-    active: "/2/crcm/",
   },
   {
     title: "Validation CPR",
     icon: FaUser,
     path: "/2/cpr",
-    active: "/2/cpr",
   },
   {
     title: "Bareme",
     icon: FaUser,
     path: "/2/baremes",
-    active: "/2/baremes",
   },
   {
     title: "Suivi des validation",
     icon: FaUser,
     path: "/2/suivi",
-    active: "/2/suivi",
   },
 ];
 
@@ -257,7 +257,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                           <>
                             <NavLink
                               to="#"
-                              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-white hover:text-zinc-800 ${
+                              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 hover:bg-white hover:text-zinc-800 ${
                                 item.subMenu.some(
                                   (v) => v?.path === pathname
                                 ) &&
@@ -303,8 +303,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                   <li key={index}>
                                     <NavLink
                                       to={item.path}
-                                      className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                        pathname === item.active && "text-white"
+                                      className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2  hover:text-white ${
+                                        pathname === item.path && "text-white"
                                       }`}
                                     >
                                       {item.title}
@@ -324,7 +324,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <li key={index}>
                       <NavLink
                         to={item.path}
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 
                            hover:bg-white hover:text-zinc-800 dark:hover:bg-meta-4 ${
                              (item.case_sensible
                                ? pathname === item.path

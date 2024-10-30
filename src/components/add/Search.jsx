@@ -10,7 +10,7 @@ const Search = ({
   return (
     <form
       onSubmit={onSubmit}
-      className="w-[100%]  my-3 border border-zinc-300 px-5 p-4 gap-x-3 rounded-[5px] "
+      className="w-[100%]  my-3 border border-zinc-300 px-5 p-4 gap-x-3 rounded-[5px] addContainer"
       noValidate
     >
       {children}

@@ -1,22 +1,84 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FORM, SCHEMA } from "./const";
 import { set, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Notiflix, { Loading, Report } from "notiflix";
-import { add, remove, update, useUsers } from "../../../services/user/useUser";
+import {
+  add,
+  remove,
+  update,
+  useParticipation,
+} from "../../../services/participation/useParticipation";
 import IconCrud from "../../../components/IconCrud/IconCrud";
 import Datatables from "../../../components/dataTable/Datatables";
 import Search from "../../../components/add/Search";
-import { addOptions } from "../../../utils/Functions";
 import Inputs from "../../../components/input/Inputs";
+import { addOptions } from "../../../utils/Functions";
+import { useProf } from "../../../services/prof/useProf";
+import {
+  mergeParticipation,
+  professorToSelect,
+  studentToSelect,
+  trainingToSelect,
+} from "../../../utils/refactor/merge";
+import { useTraining } from "../../../services/training/useTraining";
+import { useStudent } from "../../../services/student/useStudent";
 
-const tabHeader = ["Id salle", "Id Client", "Date", "Action"];
-const tabField = ["id", "id_client", "date", "action"];
-const key = "logements";
+// model Participation {
+//   id                 Int      @id @default(autoincrement())
+//   participation_date DateTime
+//   student_id         Int
+//   training_id        Int
+//   // Relations
+//   student            Student  @relation(fields: [student_id], references: [id])
+//   training           Training @relation(fields: [training_id], references: [id])
+// }
 
-const LogementsList = () => {
+const FORM = [
+  {
+    name: "student_id",
+    label: "Etudiant",
+    type: "select",
+    placeholder: "Etudiant",
+    required: true,
+    options: [],
+  },
+  {
+    name: "training_id",
+    label: "Formation",
+    type: "select",
+    placeholder: "Formation",
+    required: true,
+    options: [],
+  },
+  {
+    name: "participation_date",
+    label: "Date",
+    type: "date",
+    placeholder: "Date",
+    required: true,
+  },
+];
+
+const tabHeader = [
+  "Matricule etudiant",
+  "Nom etudiant",
+  "Formation",
+  "Prix de participation",
+  "Date de participation",
+  "Action",
+];
+const tabField = [
+  ["student", "registration"],
+  ["student", "first_name"],
+  ["training", "training_name"],
+  ["training", "participation_fee"],
+  "participation_date",
+  "action",
+];
+const key = "participations";
+
+const ParticipationList = () => {
   const queryClient = useQueryClient();
   const {
     control,
@@ -26,16 +88,22 @@ const LogementsList = () => {
     getValues,
     reset,
     handleSubmit,
-  } = useForm({
-    resolver: yupResolver(SCHEMA),
-  });
+    watch,
+  } = useForm();
+
+  const {
+    data: { students },
+  } = useStudent();
+  const {
+    data: { trainings },
+  } = useTraining();
 
   const {
     error: errorFetch,
-    data: { personnels },
+    data: { participations },
     isError,
     isFetching,
-  } = useUsers();
+  } = useParticipation();
 
   const { mutate } = useMutation({
     mutationFn: getValues("id") ? update : add,
@@ -45,7 +113,6 @@ const LogementsList = () => {
     },
     onSuccess: (data) => {
       Loading.remove();
-      setOpen(false);
       Notiflix.Notify.info("Succès", "Fermer");
       queryClient.invalidateQueries(key);
       reset();
@@ -64,6 +131,7 @@ const LogementsList = () => {
     onSuccess: (data) => {
       Loading.remove();
       queryClient.invalidateQueries(key);
+      Notiflix.Notify.info("Succès", "Fermer");
       reset();
     },
     onError: (error) => {
@@ -74,7 +142,7 @@ const LogementsList = () => {
 
   const action = (rowData) => {
     const editAction = (data) => {
-      Object.entries(mergeUser(data)).forEach(([name, value]) => {
+      Object.entries(mergeParticipation(data)).forEach(([name, value]) => {
         setValue(name, value);
       });
     };
@@ -83,32 +151,45 @@ const LogementsList = () => {
         deleteAction={() => deleteFn(rowData.id)}
         editAction={editAction}
         onDelete={() => console.log("delete")}
-        listAction={["edit", "delete", "details"]}
+        listAction={["edit", "delete"]}
         rowData={rowData}
       />
     );
   };
 
-  const newOptions = [];
-
-  const submit = (value) => {
+  const submit = (v) => {
     const data = {
-      ...value,
-      poste_id: value.poste_id?.id,
-      region_id: value.region_id?.id,
+      ...v,
+      student_id: v.student_id.value,
+      training_id: v.training_id.value,
     };
-
     mutate(data);
-    Notiflix.Notify.info("Succès", "Fermer");
   };
+
+  const OPTIONS = [
+    {
+      name: "student_id",
+      options: studentToSelect(students),
+    },
+    {
+      name: "training_id",
+      options: trainingToSelect(trainings),
+    },
+  ];
 
   return (
     <>
-      <Search onSubmit={handleSubmit(submit)}>
+      <Search
+        onSubmit={handleSubmit(submit)}
+        isEdited={watch("id")}
+        onReset={() => {
+          reset();
+        }}
+      >
         <div className="w-full  grid grid-cols-3 my-4 gap-5">
           {addOptions({
             originalArray: FORM,
-            optionsArray: newOptions,
+            optionsArray: OPTIONS,
           }).map((item, index) => (
             <Inputs
               key={index}
@@ -126,7 +207,7 @@ const LogementsList = () => {
           tabHeader={tabHeader}
           tabField={tabField}
           isFetching={isFetching}
-          tabValue={personnels?.data}
+          tabValue={participations}
           isError={isError}
           error={errorFetch}
           actionsTables={action}
@@ -137,4 +218,4 @@ const LogementsList = () => {
   );
 };
 
-export default LogementsList;
+export default ParticipationList;

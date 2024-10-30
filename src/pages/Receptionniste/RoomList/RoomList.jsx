@@ -9,14 +9,7 @@ import Datatables from "../../../components/dataTable/Datatables";
 import Search from "../../../components/add/Search";
 import { addOptions } from "../../../utils/Functions";
 import Inputs from "../../../components/input/Inputs";
-
-// model Room {
-//   id           Int      @id @default(autoincrement())
-//   room_number  String
-//   rental_price Float
-//   // Relations
-//   rentals      Rental[]
-// }
+import * as yup from "yup";
 
 const FORM = [
   {
@@ -50,7 +43,19 @@ const RoomList = () => {
     reset,
     handleSubmit,
     watch,
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(
+      yup.object().shape({
+        room_number: yup.string("").required("Numero de salle est requis"),
+        rental_price: yup
+          .string("Entrer un nombre")
+          .test("isNumber", "Entrer un nombre", (value) => {
+            return !isNaN(value);
+          })
+          .required("Prix de location est requis"),
+      })
+    ),
+  });
 
   const {
     error: errorFetch,
@@ -124,7 +129,7 @@ const RoomList = () => {
           reset();
         }}
       >
-        <div className="w-full  grid grid-cols-2 my-4 gap-5">
+        <div className="w-full  grid grid-cols-2 my-4 gap-5 place-items-start">
           {FORM.map((item, index) => (
             <Inputs
               key={index}

@@ -13,16 +13,8 @@ import IconCrud from "../../../components/IconCrud/IconCrud";
 import Datatables from "../../../components/dataTable/Datatables";
 import Search from "../../../components/add/Search";
 import Inputs from "../../../components/input/Inputs";
+import * as yup from "yup";
 
-// model Training {
-//   id                Int             @id @default(autoincrement())
-//   training_name     String
-//   participation_fee Float
-//   duration          Int
-//   // Relations
-//   participations    Participation[]
-//   assignments       Assignment[]
-// }
 const FORM = [
   {
     name: "training_name",
@@ -67,7 +59,31 @@ const TrainingList = () => {
     reset,
     handleSubmit,
     watch,
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(
+      yup.object().shape({
+        training_name: yup
+          .string()
+          .required("Nom de la formation est obligatoire"),
+        participation_fee: yup
+          .string("Frais de participation est obligatoire")
+          .test(
+            "is-number",
+            "Frais de participation doit être un nombre",
+            (value) => !isNaN(value)
+          )
+          .required("Frais de participation est obligatoire"),
+        duration: yup
+          .string("")
+          .test(
+            "is-number",
+            "Durée doit être un nombre",
+            (value) => !isNaN(value)
+          )
+          .required("Durée est obligatoire"),
+      })
+    ),
+  });
 
   const {
     error: errorFetch,

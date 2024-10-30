@@ -47,10 +47,6 @@ export const allPropertyIsVoid = (obj) => {
   return true;
 };
 
-export const addBracket = (str) => {
-  return { value: str, label: str };
-};
-
 export const isObject = (value) => {
   return value && typeof value === "object" && value.constructor === Object;
 };
@@ -74,10 +70,8 @@ export const convertJsonToFormData = (data) => {
 
 export const addOptions = ({ originalArray, optionsArray }) => {
   return originalArray.map((field) => {
-    // Recherche si un champ avec le même nom existe dans le tableau des options
     const optionField = optionsArray.find((opt) => opt.name === field.name);
 
-    // Si des options sont trouvées, on les ajoute
     if (optionField && optionField.options) {
       return {
         ...field,
@@ -85,7 +79,6 @@ export const addOptions = ({ originalArray, optionsArray }) => {
       };
     }
 
-    // Sinon, on renvoie le champ original sans modification
     return field;
   });
 };
@@ -122,48 +115,6 @@ export const filterImage = (image) => {
   }
 };
 
-export const corpsToLV = (array = []) => {
-  return array?.map((val) => {
-    return {
-      label: `${val.code_corps} - ${val.libelle_corps}`,
-      value: val.code_corps,
-    };
-  });
-};
-
-export const dateBaremeToLV = (array = []) => {
-  return array?.map((val) => {
-    return { label: val.date_bareme, value: val.date_bareme };
-  });
-};
-
-export const districtToLV = (array = []) => {
-  return array?.map((val) => {
-    return {
-      label: val.libelle_district,
-      value: val.code_district,
-    };
-  });
-};
-
-export const ministereToLV = (array = []) => {
-  return array?.map((val) => {
-    return {
-      label: val.libelle_ministere,
-      value: val.id,
-    };
-  });
-};
-
-export const gradeToLV = (array = []) => {
-  return array?.map((val) => {
-    return {
-      label: val.code_grade,
-      value: val.code_grade,
-    };
-  });
-};
-
 export const isVoidObject = (obj) => {
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
@@ -180,11 +131,22 @@ export const allPropertyIsValid = (obj) => {
   console.log(obj, "agent");
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
-      // Vérifie si la propriété est ni une chaîne vide ni undefined
       if (obj[key] === "" || obj[key] === undefined || obj[key] === null) {
         return false;
       }
     }
   }
   return true;
+};
+
+export const dateTimeFormat = (value) => {
+  const [date, _] = value.split("T");
+  const [year, month, day] = date.split("-");
+  return `${day}-${month}-${year}`;
+};
+
+export const dateTimeToInput = (value) => {
+  const [date, _] = value.split("T");
+  const [year, month, day] = date.split("-");
+  return `${year}-${month}-${day}`;
 };

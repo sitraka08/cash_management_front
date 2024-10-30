@@ -3,73 +3,53 @@ import { set, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Notiflix, { Loading, Report } from "notiflix";
-import IconCrud from "../../../components/IconCrud/IconCrud";
-import Datatables from "../../../components/dataTable/Datatables";
-import Search from "../../../components/add/Search";
-import Inputs from "../../../components/input/Inputs";
 import {
   add,
   remove,
   update,
-  useClient,
-} from "../../../services/client/useClient";
+  useEquipment,
+} from "../../../services/equipment/useEquipment";
+import IconCrud from "../../../components/IconCrud/IconCrud";
+import Datatables from "../../../components/dataTable/Datatables";
+import Search from "../../../components/add/Search";
+import Inputs from "../../../components/input/Inputs";
 import * as yup from "yup";
-// model Client {
-//   id         Int      @id @default(autoincrement())
-//   ref        String
-//   first_name String
-//   last_name  String
-//   address    String
-//   email      String
-//   // Relations
-//   sales      Sale[]
-//   rentals    Rental[]
-// }
 
-export const FORM = [
+const FORM = [
   {
-    name: "first_name",
-    label: "Nom",
+    name: "design",
+    label: "Désignation",
     type: "text",
-    placeholder: "Nom",
+    placeholder: "Désignation",
     required: true,
   },
   {
-    name: "last_name",
-    label: "Prénom(s)",
+    name: "purchase_price",
+    label: "Prix d'entrée",
     type: "text",
-    placeholder: "Prénom(s)",
-    required: true,
-  },
-
-  {
-    name: "address",
-    label: "Adresse",
-    type: "text",
-    placeholder: "Adresse",
+    placeholder: "Ex: 1000",
     required: true,
   },
   {
-    name: "email",
-    label: "Email",
-    type: "email",
-    placeholder: "Email",
+    name: "sale_price",
+    label: "Prix de sortie",
+    type: "text",
+    placeholder: "Ex: 1500",
     required: true,
   },
 ];
 
-const tabHeader = ["Id", "Nom", "Prénom(s)", "Adresse", "Email", "Action"];
-const tabField = [
-  "ref",
-  "last_name",
-  "first_name",
-  "address",
-  "email",
-  "action",
+const tabHeader = [
+  "Designation",
+  "Prix d'entré",
+  "Prix de sortie",
+  "Date d'entrée",
+  "Action",
 ];
-const key = "clients";
+const tabField = ["ref", "design", "purchase_price", "sale_price", "action"];
+const key = "equipments";
 
-const ClientList = () => {
+const EquipmentList = () => {
   const queryClient = useQueryClient();
   const {
     control,
@@ -80,26 +60,14 @@ const ClientList = () => {
     reset,
     handleSubmit,
     watch,
-  } = useForm({
-    resolver: yupResolver(
-      yup.object().shape({
-        first_name: yup.string().required("Nom est obligatoire"),
-        last_name: yup.string().required("Prénom(s) est obligatoire"),
-        address: yup.string().required("Adresse est obligatoire"),
-        email: yup
-          .string()
-          .email("Email invalide")
-          .required("Email est obligatoire"),
-      })
-    ),
-  });
+  } = useForm();
 
   const {
     error: errorFetch,
-    data: { clients },
+    data: { equipments },
     isError,
     isFetching,
-  } = useClient();
+  } = useEquipment();
 
   const { mutate } = useMutation({
     mutationFn: getValues("id") ? update : add,
@@ -122,12 +90,12 @@ const ClientList = () => {
     mutationFn: remove,
     mutationKey: key,
     onMutate: (form) => {
-      Notiflix.Notify.info("Succès", "Fermer");
       Loading.standard();
     },
     onSuccess: (data) => {
       Loading.remove();
       queryClient.invalidateQueries(key);
+      Notiflix.Notify.info("Succès", "Fermer");
       reset();
     },
     onError: (error) => {
@@ -166,7 +134,7 @@ const ClientList = () => {
           reset();
         }}
       >
-        <div className="w-full  grid grid-cols-4 my-4 gap-5">
+        <div className="w-full  grid grid-cols-3 my-4 gap-5">
           {FORM.map((item, index) => (
             <Inputs
               key={index}
@@ -184,7 +152,7 @@ const ClientList = () => {
           tabHeader={tabHeader}
           tabField={tabField}
           isFetching={isFetching}
-          tabValue={clients}
+          tabValue={equipments}
           isError={isError}
           error={errorFetch}
           actionsTables={action}
@@ -195,4 +163,4 @@ const ClientList = () => {
   );
 };
 
-export default ClientList;
+export default EquipmentList;

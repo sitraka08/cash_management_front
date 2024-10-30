@@ -107,7 +107,7 @@ const Header = (props) => {
             </OverlayPanel>
           </div>
           <div>
-            <h1 className="text-base">{userConnected?.nom}</h1>
+            <h1 className="text-base">{userConnected?.first_name}</h1>
             <p className="text-xs text-gray-600">{userConnected?.poste}</p>
           </div>
         </div>
